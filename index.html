@@ -1,0 +1,676 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Royal Strikers - Live Betting & Casino</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        parimatchDark: '#121212',
+                        parimatchCard: '#1e1e1e',
+                        parimatchYellow: '#ffe100',
+                        parimatchGreen: '#00b167',
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        @keyframes marquee {
+            0% { transform: translateX(100%); }
+            100% { transform: translateX(-100%); }
+        }
+        .animate-marquee {
+            display: inline-block;
+            animation: marquee 25s linear infinite;
+        }
+    </style>
+</head>
+<body class="bg-parimatchDark text-white min-h-screen font-sans">
+
+    <!-- Top Header -->
+    <header class="bg-parimatchCard border-b border-zinc-800 px-6 py-3 flex justify-between items-center sticky top-0 z-50">
+        <div class="flex items-center space-x-6">
+            <h1 class="text-2xl font-black tracking-wider text-parimatchYellow">
+                ⚡ ROYAL STRIKERS
+            </h1>
+            <nav class="hidden md:flex space-x-6 text-sm font-semibold text-zinc-400">
+                <button onclick="switchTab('sports')" id="nav-sports" class="text-parimatchYellow hover:text-white transition">Live Sports</button>
+                <button onclick="switchTab('casino')" id="nav-casino" class="hover:text-white transition">Casino Games</button>
+            </nav>
+        </div>
+
+        <!-- Wallet, Deposit & Withdrawal Buttons -->
+        <div class="flex items-center space-x-3">
+            <div class="bg-zinc-900 border border-zinc-700 px-4 py-1.5 rounded-lg flex items-center space-x-2">
+                <span class="text-zinc-400 text-xs">Balance:</span>
+                <span id="walletBalance" class="font-bold text-parimatchYellow">₹10,000.00</span>
+            </div>
+            <button onclick="openDepositModal()" class="bg-parimatchYellow hover:bg-yellow-400 text-black px-3 py-1.5 rounded-lg font-bold text-xs transition">
+                DEPOSIT
+            </button>
+            <button onclick="openWithdrawModal()" class="bg-zinc-800 hover:bg-zinc-700 text-red-400 border border-red-500/30 px-3 py-1.5 rounded-lg font-bold text-xs transition">
+                WITHDRAW
+            </button>
+        </div>
+    </header>
+
+    <!-- Live Running Ticker Line -->
+    <div class="bg-zinc-900 border-b border-zinc-800 py-2 px-4 overflow-hidden whitespace-nowrap relative flex items-center">
+        <div class="flex items-center space-x-2 text-parimatchYellow text-xs font-bold mr-4 shrink-0 uppercase tracking-wider bg-parimatchCard px-2.5 py-1 rounded border border-zinc-800 z-10">
+            <i class="fa-solid fa-bullhorn text-red-500 animate-bounce mr-1"></i> Live Feed:
+        </div>
+        <div class="overflow-hidden w-full">
+            <div class="animate-marquee text-xs text-zinc-300 space-x-12">
+                <span class="text-green-400 font-semibold">🔥 User Rahul_99 won ₹15,000 on Aviator at 4.2x multiplier!</span>
+                <span class="text-parimatchYellow font-semibold">⚡ IPL Final: Mumbai Strikers need 24 runs in 12 balls! Live odds updating...</span>
+                <span class="text-blue-400 font-semibold">💎 User Aman_X cashed out ₹8,400 in Mines Sweeper!</span>
+                <span class="text-purple-400 font-semibold">🚀 New Tournament Live: Join CS2 Major Championship now with 0% fee!</span>
+            </div>
+        </div>
+    </div>
+
+    <!-- Main Content Area -->
+    <main class="max-w-7xl mx-auto p-4 md:p-6">
+        
+        <!-- ================= SPORTS SECTION ================= -->
+        <div id="section-sports" class="grid grid-cols-1 lg:grid-cols-4 gap-6">
+            <aside class="bg-parimatchCard border border-zinc-800 rounded-xl p-4 h-fit">
+                <h3 class="text-sm font-bold text-zinc-400 uppercase tracking-wider mb-4">Popular Sports</h3>
+                <ul class="space-y-2 text-sm">
+                    <li><button onclick="switchSport('cricket')" id="btn-cricket" class="w-full flex items-center justify-between p-2.5 rounded-lg bg-zinc-900 text-parimatchYellow font-semibold transition"><span class="flex items-center"><i class="fa-solid fa-baseball-bat-ball mr-3"></i> Cricket</span> <span class="bg-zinc-800 px-2 py-0.5 rounded text-xs">36</span></button></li>
+                    <li><button onclick="switchSport('football')" id="btn-football" class="w-full flex items-center justify-between p-2.5 rounded-lg hover:bg-zinc-900 text-zinc-300 transition"><span class="flex items-center"><i class="fa-solid fa-futbol mr-3"></i> Football</span> <span class="bg-zinc-800 px-2 py-0.5 rounded text-xs">54</span></button></li>
+                    <li><button onclick="switchSport('basketball')" id="btn-basketball" class="w-full flex items-center justify-between p-2.5 rounded-lg hover:bg-zinc-900 text-zinc-300 transition"><span class="flex items-center"><i class="fa-solid fa-basketball mr-3"></i> Basketball</span> <span class="bg-zinc-800 px-2 py-0.5 rounded text-xs">22</span></button></li>
+                    <li><button onclick="switchSport('esports')" id="btn-esports" class="w-full flex items-center justify-between p-2.5 rounded-lg hover:bg-zinc-900 text-zinc-300 transition"><span class="flex items-center"><i class="fa-solid fa-gamepad mr-3"></i> E-Sports</span> <span class="bg-zinc-800 px-2 py-0.5 rounded text-xs">40</span></button></li>
+                </ul>
+            </aside>
+
+            <section class="lg:col-span-2 space-y-4">
+                <div class="bg-gradient-to-r from-yellow-600 via-yellow-500 to-amber-600 rounded-2xl p-6 text-black shadow-xl relative overflow-hidden">
+                    <span class="bg-black text-parimatchYellow text-xs font-bold px-2.5 py-1 rounded-md uppercase">MEGA LIVE TOURNAMENT</span>
+                    <h2 id="bannerTitle" class="text-2xl font-black mt-2">World Championship Finals</h2>
+                    <p class="text-sm font-medium mt-1">Place your live bets now and cash out instantly!</p>
+                </div>
+                <div class="bg-parimatchCard border border-zinc-800 rounded-xl p-4">
+                    <div class="flex justify-between items-center mb-4 pb-2 border-b border-zinc-800">
+                        <h3 id="sectionTitle" class="font-bold text-sm text-zinc-300 flex items-center"><i class="fa-solid fa-bolt text-parimatchYellow mr-2"></i> Live Matches</h3>
+                        <span class="text-xs text-green-400 font-semibold animate-pulse">● LIVE EVENTS</span>
+                    </div>
+                    <div id="matchContainer" class="space-y-3"></div>
+                </div>
+            </section>
+
+            <aside class="bg-parimatchCard border border-zinc-800 rounded-xl p-4 h-fit">
+                <h3 class="text-sm font-bold text-zinc-300 uppercase tracking-wider mb-4 flex items-center justify-between">
+                    <span><i class="fa-solid fa-receipt mr-2 text-parimatchYellow"></i> Bet Slip</span>
+                    <span id="betCount" class="bg-zinc-800 text-xs px-2 py-0.5 rounded text-zinc-400">0</span>
+                </h3>
+                <div id="betSlipContent" class="text-zinc-500 text-sm text-center py-8">No bets selected yet. Click on any odds to place a bet.</div>
+                <div id="betActionBox" class="hidden mt-4 pt-4 border-t border-zinc-800 space-y-3">
+                    <div class="flex justify-between text-xs text-zinc-400"><span>Selected:</span><span id="selectedTeam" class="text-white font-bold"></span></div>
+                    <div><label class="text-xs text-zinc-400 block mb-1">Stake Amount (₹):</label><input type="number" id="stakeAmount" value="100" oninput="calculatePayout()" class="w-full bg-zinc-900 border border-zinc-700 rounded-lg p-2.5 text-sm text-white focus:outline-none focus:border-parimatchYellow"></div>
+                    <div class="bg-zinc-900 border border-zinc-800 p-3 rounded-lg flex justify-between items-center"><span class="text-xs text-zinc-400">Potential Payout:</span><span id="payoutAmount" class="font-bold text-parimatchGreen text-base">₹0.00</span></div>
+                    <button onclick="confirmBet()" class="w-full bg-parimatchYellow hover:bg-yellow-400 text-black py-2.5 rounded-lg font-bold text-sm transition">Place Bet</button>
+                </div>
+            </aside>
+        </div>
+
+        <!-- ================= CASINO GAMES HUB (6 GAMES) ================= -->
+        <div id="section-casino" class="hidden space-y-6">
+            <h2 class="text-2xl font-bold text-parimatchYellow flex items-center"><i class="fa-solid fa-dice mr-3"></i> Casino Arcade & Instant Games</h2>
+            
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+                <div class="bg-parimatchCard border border-zinc-800 rounded-xl p-6 flex flex-col justify-between">
+                    <div><div class="text-parimatchYellow text-3xl mb-3"><i class="fa-solid fa-plane-up"></i></div><h3 class="text-xl font-bold mb-2">Aviator Crash</h3><p class="text-zinc-400 text-sm mb-4">Watch multiplier fly high. Cash out before it crashes!</p></div>
+                    <button onclick="switchTab('aviator')" class="bg-parimatchYellow hover:bg-yellow-400 text-black font-bold py-2.5 rounded-lg transition">Play Aviator</button>
+                </div>
+                <div class="bg-parimatchCard border border-zinc-800 rounded-xl p-6 flex flex-col justify-between">
+                    <div><div class="text-parimatchGreen text-3xl mb-3"><i class="fa-solid fa-bomb"></i></div><h3 class="text-xl font-bold mb-2">Mines Sweeper</h3><p class="text-zinc-400 text-sm mb-4">Uncover gems on the grid while avoiding hidden mines.</p></div>
+                    <button onclick="switchTab('mines')" class="bg-parimatchGreen hover:bg-emerald-600 text-white font-bold py-2.5 rounded-lg transition">Play Mines</button>
+                </div>
+                <div class="bg-parimatchCard border border-zinc-800 rounded-xl p-6 flex flex-col justify-between">
+                    <div><div class="text-amber-500 text-3xl mb-3"><i class="fa-solid fa-chess-rook"></i></div><h3 class="text-xl font-bold mb-2">Tower Rush</h3><p class="text-zinc-400 text-sm mb-4">Climb up tower rows. Higher you go, bigger the multiplier!</p></div>
+                    <button onclick="switchTab('tower')" class="bg-amber-500 hover:bg-amber-400 text-black font-bold py-2.5 rounded-lg transition">Play Tower Rush</button>
+                </div>
+                <div class="bg-parimatchCard border border-zinc-800 rounded-xl p-6 flex flex-col justify-between">
+                    <div><div class="text-blue-400 text-3xl mb-3"><i class="fa-solid fa-circle-dot"></i></div><h3 class="text-xl font-bold mb-2">Plinko Ball</h3><p class="text-zinc-400 text-sm mb-4">Drop the ball down pegs with live canvas animation.</p></div>
+                    <button onclick="switchTab('plinko')" class="bg-blue-600 hover:bg-blue-500 text-white font-bold py-2.5 rounded-lg transition">Play Plinko</button>
+                </div>
+                <div class="bg-parimatchCard border border-zinc-800 rounded-xl p-6 flex flex-col justify-between">
+                    <div><div class="text-purple-400 text-3xl mb-3"><i class="fa-solid fa-chart-line"></i></div><h3 class="text-xl font-bold mb-2">Limbo Multiplier</h3><p class="text-zinc-400 text-sm mb-4">Set your target multiplier and test your luck instantly.</p></div>
+                    <button onclick="switchTab('limbo')" class="bg-purple-600 hover:bg-purple-500 text-white font-bold py-2.5 rounded-lg transition">Play Limbo</button>
+                </div>
+                <div class="bg-parimatchCard border border-zinc-800 rounded-xl p-6 flex flex-col justify-between">
+                    <div><div class="text-rose-500 text-3xl mb-3"><i class="fa-solid fa-dice-five"></i></div><h3 class="text-xl font-bold mb-2">Lucky Dice</h3><p class="text-zinc-400 text-sm mb-4">Roll the dice above or below your chosen target number.</p></div>
+                    <button onclick="switchTab('dice')" class="bg-rose-600 hover:bg-rose-500 text-white font-bold py-2.5 rounded-lg transition">Play Dice</button>
+                </div>
+            </div>
+        </div>
+
+        <!-- ================= 1. AVIATOR ================= -->
+        <div id="section-aviator" class="hidden max-w-2xl mx-auto bg-parimatchCard border border-zinc-800 rounded-2xl p-6 text-center">
+            <button onclick="switchTab('casino')" class="float-left text-zinc-400 hover:text-white mb-4"><i class="fa-solid fa-arrow-left mr-1"></i> Back to Casino</button>
+            <div class="clear-both"></div>
+            <h2 class="text-xl font-bold text-parimatchYellow mb-2"><i class="fa-solid fa-plane-up mr-2"></i> Aviator Crash Game</h2>
+            <div class="bg-zinc-900 border border-zinc-800 rounded-xl p-8 mb-6">
+                <div id="aviatorMultiplier" class="text-5xl font-black text-parimatchYellow mb-2">1.00x</div>
+                <div id="aviatorStatus" class="text-xs text-green-400 font-semibold tracking-wider">READY TO FLY</div>
+            </div>
+            <div class="space-y-4">
+                <div class="flex justify-between items-center bg-zinc-900 p-3 rounded-xl border border-zinc-800">
+                    <span class="text-sm text-zinc-400">Bet Amount (₹):</span>
+                    <input type="number" id="aviatorBet" value="100" class="w-32 bg-zinc-800 border border-zinc-700 rounded-lg p-2 text-white font-bold text-center focus:outline-none">
+                </div>
+                <button id="aviatorBtn" onclick="startAviator()" class="w-full bg-parimatchYellow hover:bg-yellow-400 text-black font-bold py-3 rounded-xl text-lg transition">Place Bet & Start</button>
+            </div>
+        </div>
+
+        <!-- ================= 2. MINES ================= -->
+        <div id="section-mines" class="hidden max-w-xl mx-auto bg-parimatchCard border border-zinc-800 rounded-2xl p-6 text-center">
+            <button onclick="switchTab('casino')" class="float-left text-zinc-400 hover:text-white mb-4"><i class="fa-solid fa-arrow-left mr-1"></i> Back to Casino</button>
+            <div class="clear-both"></div>
+            <h2 class="text-xl font-bold text-parimatchGreen mb-2"><i class="fa-solid fa-bomb mr-2"></i> Mines Sweeper</h2>
+            <div class="flex justify-between items-center mb-4 bg-zinc-900 p-3 rounded-xl border border-zinc-800">
+                <span class="text-sm text-zinc-400">Bet (₹):</span>
+                <input type="number" id="minesBet" value="100" class="w-28 bg-zinc-800 border border-zinc-700 rounded-lg p-1.5 text-white font-bold text-center">
+                <button id="minesStartBtn" onclick="startMines()" class="bg-parimatchGreen hover:bg-emerald-600 text-white px-4 py-2 rounded-lg font-bold text-sm">Start Game</button>
+            </div>
+            <div class="bg-zinc-900 p-3 rounded-xl mb-4 border border-zinc-800 flex justify-between items-center">
+                <span class="text-xs text-zinc-400">Current Winnings: <span id="minesWinAmt" class="text-parimatchGreen font-bold text-base">₹0.00</span></span>
+                <button id="minesCashoutBtn" onclick="cashoutMines()" class="hidden bg-emerald-600 hover:bg-emerald-500 text-white px-4 py-1.5 rounded-lg text-xs font-bold transition">CASHOUT</button>
+            </div>
+            <div id="minesGrid" class="grid grid-cols-4 gap-3 my-4"></div>
+        </div>
+
+        <!-- ================= 3. TOWER RUSH ================= -->
+        <div id="section-tower" class="hidden max-w-xl mx-auto bg-parimatchCard border border-zinc-800 rounded-2xl p-6 text-center">
+            <button onclick="switchTab('casino')" class="float-left text-zinc-400 hover:text-white mb-4"><i class="fa-solid fa-arrow-left mr-1"></i> Back to Casino</button>
+            <div class="clear-both"></div>
+            <h2 class="text-xl font-bold text-amber-500 mb-2"><i class="fa-solid fa-chess-rook mr-2"></i> Tower Rush</h2>
+            <div class="flex justify-between items-center mb-4 bg-zinc-900 p-3 rounded-xl border border-zinc-800">
+                <span class="text-sm text-zinc-400">Bet (₹):</span>
+                <input type="number" id="towerBet" value="100" class="w-28 bg-zinc-800 border border-zinc-700 rounded-lg p-1.5 text-white font-bold text-center">
+                <button id="towerStartBtn" onclick="startTower()" class="bg-amber-500 hover:bg-amber-400 text-black px-4 py-2 rounded-lg font-bold text-sm">Start Climb</button>
+            </div>
+            <div class="bg-zinc-900 p-3 rounded-xl mb-4 border border-zinc-800 flex justify-between items-center">
+                <span class="text-xs text-zinc-400">Multiplier: <span id="towerMulti" class="text-amber-400 font-bold text-base">1.25x</span> | Win: <span id="towerWinAmt" class="text-parimatchGreen font-bold text-base">₹0.00</span></span>
+                <button id="towerCashoutBtn" onclick="cashoutTower()" class="hidden bg-emerald-600 hover:bg-emerald-500 text-white px-4 py-1.5 rounded-lg text-xs font-bold transition">CASHOUT</button>
+            </div>
+            <div id="towerGrid" class="space-y-2 my-4"></div>
+        </div>
+
+        <!-- ================= 4. PLINKO (WITH ANIMATION) ================= -->
+        <div id="section-plinko" class="hidden max-w-xl mx-auto bg-parimatchCard border border-zinc-800 rounded-2xl p-6 text-center">
+            <button onclick="switchTab('casino')" class="float-left text-zinc-400 hover:text-white mb-4"><i class="fa-solid fa-arrow-left mr-1"></i> Back to Casino</button>
+            <div class="clear-both"></div>
+            <h2 class="text-xl font-bold text-blue-400 mb-2"><i class="fa-solid fa-circle-dot mr-2"></i> Plinko Ball</h2>
+            <div class="bg-zinc-900 p-4 rounded-xl border border-zinc-800 space-y-4">
+                <div class="flex justify-between items-center">
+                    <span class="text-sm text-zinc-400">Bet (₹):</span>
+                    <input type="number" id="plinkoBet" value="100" class="w-32 bg-zinc-800 border border-zinc-700 rounded-lg p-2 text-white font-bold text-center">
+                </div>
+                <div class="relative bg-black rounded-xl overflow-hidden border border-zinc-800 h-64 flex items-center justify-center">
+                    <canvas id="plinkoCanvas" width="350" height="250" class="block mx-auto"></canvas>
+                </div>
+                <div id="plinkoResult" class="text-lg font-bold text-parimatchYellow">Drop the ball to win multipliers!</div>
+                <button id="plinkoBtn" onclick="playPlinko()" class="w-full bg-blue-600 hover:bg-blue-500 text-white py-3 rounded-xl font-bold transition">Drop Ball</button>
+            </div>
+        </div>
+
+        <!-- ================= 5. LIMBO ================= -->
+        <div id="section-limbo" class="hidden max-w-xl mx-auto bg-parimatchCard border border-zinc-800 rounded-2xl p-6 text-center">
+            <button onclick="switchTab('casino')" class="float-left text-zinc-400 hover:text-white mb-4"><i class="fa-solid fa-arrow-left mr-1"></i> Back to Casino</button>
+            <div class="clear-both"></div>
+            <h2 class="text-xl font-bold text-purple-400 mb-2"><i class="fa-solid fa-chart-line mr-2"></i> Limbo Multiplier</h2>
+            <div class="bg-zinc-900 p-6 rounded-xl border border-zinc-800 space-y-4">
+                <div class="flex justify-between items-center">
+                    <span class="text-sm text-zinc-400">Bet (₹):</span>
+                    <input type="number" id="limboBet" value="100" class="w-32 bg-zinc-800 border border-zinc-700 rounded-lg p-2 text-white font-bold text-center">
+                </div>
+                <div class="flex justify-between items-center">
+                    <span class="text-sm text-zinc-400">Target Multiplier:</span>
+                    <input type="number" id="limboTarget" value="2.00" step="0.1" class="w-32 bg-zinc-800 border border-zinc-700 rounded-lg p-2 text-white font-bold text-center">
+                </div>
+                <div id="limboResult" class="text-3xl font-black text-purple-400">1.00x</div>
+                <button onclick="playLimbo()" class="w-full bg-purple-600 hover:bg-purple-500 text-white py-3 rounded-xl font-bold transition">Play Limbo</button>
+            </div>
+        </div>
+
+        <!-- ================= 6. LUCKY DICE ================= -->
+        <div id="section-dice" class="hidden max-w-xl mx-auto bg-parimatchCard border border-zinc-800 rounded-2xl p-6 text-center">
+            <button onclick="switchTab('casino')" class="float-left text-zinc-400 hover:text-white mb-4"><i class="fa-solid fa-arrow-left mr-1"></i> Back to Casino</button>
+            <div class="clear-both"></div>
+            <h2 class="text-xl font-bold text-rose-500 mb-2"><i class="fa-solid fa-dice-five mr-2"></i> Lucky Dice</h2>
+            <div class="bg-zinc-900 p-6 rounded-xl border border-zinc-800 space-y-4">
+                <div class="flex justify-between items-center">
+                    <span class="text-sm text-zinc-400">Bet (₹):</span>
+                    <input type="number" id="diceBet" value="100" class="w-32 bg-zinc-800 border border-zinc-700 rounded-lg p-2 text-white font-bold text-center">
+                </div>
+                <div id="diceResult" class="text-5xl font-black text-rose-500">🎲 50</div>
+                <button onclick="playDice()" class="w-full bg-rose-600 hover:bg-rose-500 text-white py-3 rounded-xl font-bold transition">Roll Dice</button>
+            </div>
+        </div>
+
+    </main>
+
+    <!-- ================= DEPOSIT MODAL ================= -->
+    <div id="depositModal" class="fixed inset-0 bg-black/80 backdrop-blur-sm hidden items-center justify-center z-50 p-4">
+        <div class="bg-parimatchCard border border-zinc-800 rounded-2xl max-w-md w-full p-6 shadow-2xl space-y-4">
+            <div class="flex justify-between items-center pb-3 border-b border-zinc-800">
+                <h3 class="text-lg font-bold text-parimatchYellow flex items-center"><i class="fa-solid fa-qrcode mr-2"></i> Scan & Pay Deposit</h3>
+                <button onclick="closeDepositModal()" class="text-zinc-400 hover:text-white"><i class="fa-solid fa-xmark text-xl"></i></button>
+            </div>
+            <div class="text-center bg-zinc-900 p-4 rounded-xl border border-zinc-800 space-y-3">
+                <div class="bg-white p-2 w-40 h-40 mx-auto rounded-lg flex items-center justify-center overflow-hidden">
+                    <img src="qr.png" alt="UPI QR Code" class="w-full h-full object-contain">
+                </div>
+                <div class="text-xs text-zinc-400">Scan via GPay / PhonePe / Paytm</div>
+                <div class="bg-zinc-800 p-2 rounded-lg text-parimatchYellow font-mono text-sm font-bold">
+                    royalstrikers@oksbi
+                </div>
+            </div>
+            <div class="space-y-3">
+                <div><label class="text-xs text-zinc-400 block mb-1">Enter Deposit Amount (₹):</label><input type="number" id="depAmount" value="1000" class="w-full bg-zinc-900 border border-zinc-700 rounded-lg p-2.5 text-sm text-white focus:outline-none focus:border-parimatchYellow"></div>
+                <div><label class="text-xs text-zinc-400 block mb-1">Enter 12-digit UTR / Reference Number:</label><input type="text" id="depUtr" placeholder="e.g. 668396798987" class="w-full bg-zinc-900 border border-zinc-700 rounded-lg p-2.5 text-sm text-white focus:outline-none focus:border-parimatchYellow"></div>
+                <button onclick="submitDeposit()" class="w-full bg-parimatchYellow hover:bg-yellow-400 text-black py-3 rounded-xl font-bold text-sm transition">Submit Deposit Request</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- ================= WITHDRAWAL MODAL ================= -->
+    <div id="withdrawModal" class="fixed inset-0 bg-black/80 backdrop-blur-sm hidden items-center justify-center z-50 p-4">
+        <div class="bg-parimatchCard border border-zinc-800 rounded-2xl max-w-md w-full p-6 shadow-2xl space-y-4">
+            <div class="flex justify-between items-center pb-3 border-b border-zinc-800">
+                <h3 class="text-lg font-bold text-red-500 flex items-center"><i class="fa-solid fa-wallet mr-2"></i> Request Withdrawal</h3>
+                <button onclick="closeWithdrawModal()" class="text-zinc-400 hover:text-white"><i class="fa-solid fa-xmark text-xl"></i></button>
+            </div>
+            <div class="space-y-3">
+                <div><label class="text-xs text-zinc-400 block mb-1">Withdrawal Amount (₹):</label><input type="number" id="withdrawAmount" value="1000" class="w-full bg-zinc-900 border border-zinc-700 rounded-lg p-2.5 text-sm text-white focus:outline-none focus:border-red-500"></div>
+                <div><label class="text-xs text-zinc-400 block mb-1">Your UPI ID for payout:</label><input type="text" id="withdrawUpi" placeholder="e.g. yourname@oksbi" class="w-full bg-zinc-900 border border-zinc-700 rounded-lg p-2.5 text-sm text-white focus:outline-none focus:border-red-500"></div>
+                <button onclick="submitWithdrawal()" class="w-full bg-red-600 hover:bg-red-500 text-white py-3 rounded-xl font-bold text-sm transition">Submit Withdrawal Request</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- JavaScript -->
+    <script>
+        let balance = 10000.00;
+        let activeBet = null;
+
+        function switchTab(tabName) {
+            ['sports', 'casino', 'aviator', 'mines', 'tower', 'plinko', 'limbo', 'dice'].forEach(t => {
+                let sec = document.getElementById('section-' + t);
+                if(sec) sec.classList.add('hidden');
+            });
+            let targetSec = document.getElementById('section-' + tabName);
+            if(targetSec) targetSec.classList.remove('hidden');
+            
+            ['sports', 'casino'].forEach(s => {
+                let nav = document.getElementById('nav-' + s);
+                if(nav) nav.className = (s === tabName || (tabName !== 'sports' && s === 'casino')) ? "text-parimatchYellow hover:text-white transition font-semibold" : "hover:text-white transition";
+            });
+            
+            if(tabName === 'mines' && document.getElementById('minesGrid').children.length === 0) initMinesGrid();
+            if(tabName === 'tower' && document.getElementById('towerGrid').children.length === 0) initTowerGrid();
+        }
+
+        const sportsData = {
+            cricket: { 
+                title: "Live Cricket Matches", 
+                banner: "IPL Grand Final 2026", 
+                matches: [
+                    { tournament: "T20 Premier League", team1: "Mumbai Strikers", team2: "Royal Challengers", odds1: 1.85, oddsX: 3.40, odds2: 2.10 },
+                    { tournament: "ODI International", team1: "India", team2: "Australia", odds1: 1.50, oddsX: 4.20, odds2: 2.60 },
+                    { tournament: "Test Championship", team1: "England", team2: "South Africa", odds1: 2.05, oddsX: 3.10, odds2: 1.90 }
+                ] 
+            },
+            football: { 
+                title: "Live Football Matches", 
+                banner: "UEFA Champions League Night", 
+                matches: [
+                    { tournament: "Premier League", team1: "Manchester United", team2: "Arsenal FC", odds1: 2.20, oddsX: 3.30, odds2: 1.75 },
+                    { tournament: "La Liga", team1: "Real Madrid", team2: "FC Barcelona", odds1: 1.90, oddsX: 3.60, odds2: 1.95 }
+                ] 
+            },
+            basketball: { 
+                title: "Live Basketball Games", 
+                banner: "NBA Finals Showdown", 
+                matches: [
+                    { tournament: "NBA", team1: "Los Angeles Lakers", team2: "Boston Celtics", odds1: 1.65, oddsX: 12.0, odds2: 2.30 }
+                ] 
+            },
+            esports: { 
+                title: "Live E-Sports Tournaments", 
+                banner: "CS2 Major Championship", 
+                matches: [
+                    { tournament: "Counter-Strike 2", team1: "Natus Vincere", team2: "FaZe Clan", odds1: 1.70, oddsX: 15.0, odds2: 2.15 }
+                ] 
+            }
+        };
+
+        window.onload = function() { switchSport('cricket'); };
+
+        function switchSport(sportKey) {
+            ['cricket', 'football', 'basketball', 'esports'].forEach(s => {
+                let btn = document.getElementById('btn-' + s);
+                if(btn) btn.className = s === sportKey ? "w-full flex items-center justify-between p-2.5 rounded-lg bg-zinc-900 text-parimatchYellow font-semibold transition" : "w-full flex items-center justify-between p-2.5 rounded-lg hover:bg-zinc-900 text-zinc-300 transition";
+            });
+            let data = sportsData[sportKey];
+            document.getElementById('bannerTitle').innerText = data.banner;
+            document.getElementById('sectionTitle').innerHTML = `<i class="fa-solid fa-bolt text-parimatchYellow mr-2"></i> ${data.title}`;
+            let container = document.getElementById('matchContainer');
+            container.innerHTML = "";
+            data.matches.forEach(m => {
+                container.innerHTML += `
+                    <div class="bg-zinc-900 border border-zinc-800 p-4 rounded-xl flex flex-col md:flex-row justify-between items-center gap-4">
+                        <div><div class="text-xs text-zinc-500 mb-1">${m.tournament}</div><div class="font-bold text-sm">${m.team1} vs ${m.team2}</div></div>
+                        <div class="flex gap-2">
+                            <button onclick="placeBet('${m.team1}', ${m.odds1})" class="bg-zinc-800 hover:bg-zinc-700 border border-zinc-700 px-3 py-2 rounded-lg text-center"><div class="text-xs text-zinc-400">1</div><div class="font-bold text-parimatchYellow">${m.odds1}</div></button>
+                            ${m.oddsX ? `<button onclick="placeBet('Draw', ${m.oddsX})" class="bg-zinc-800 hover:bg-zinc-700 border border-zinc-700 px-3 py-2 rounded-lg text-center"><div class="text-xs text-zinc-400">X</div><div class="font-bold text-parimatchYellow">${m.oddsX}</div></button>` : ''}
+                            <button onclick="placeBet('${m.team2}', ${m.odds2})" class="bg-zinc-800 hover:bg-zinc-700 border border-zinc-700 px-3 py-2 rounded-lg text-center"><div class="text-xs text-zinc-400">2</div><div class="font-bold text-parimatchYellow">${m.odds2}</div></button>
+                        </div>
+                    </div>`;
+            });
+        }
+
+        function placeBet(team, odds) {
+            activeBet = { team, odds };
+            document.getElementById('betCount').innerText = "1";
+            document.getElementById('selectedTeam').innerText = `${team} (@${odds})`;
+            document.getElementById('betSlipContent').innerHTML = `<div class="text-left text-sm text-zinc-300 font-medium">Selected: <span class="text-parimatchYellow">${team}</span></div>`;
+            document.getElementById('betActionBox').classList.remove('hidden');
+            calculatePayout();
+        }
+
+        function calculatePayout() {
+            if (!activeBet) return;
+            let stake = parseFloat(document.getElementById('stakeAmount').value) || 0;
+            document.getElementById('payoutAmount').innerText = '₹' + (stake * activeBet.odds).toFixed(2);
+        }
+
+        function confirmBet() {
+            let stake = parseFloat(document.getElementById('stakeAmount').value);
+            if(stake > balance) { alert("Insufficient balance!"); return; }
+            balance -= stake;
+            document.getElementById('walletBalance').innerText = '₹' + balance.toFixed(2);
+            alert(`Bet Placed Successfully on ${activeBet.team} for ₹${stake}!`);
+            document.getElementById('betActionBox').classList.add('hidden');
+            document.getElementById('betCount').innerText = "0";
+            activeBet = null;
+        }
+
+        function openDepositModal() { document.getElementById('depositModal').classList.remove('hidden'); document.getElementById('depositModal').classList.add('flex'); }
+        function closeDepositModal() { document.getElementById('depositModal').classList.remove('flex'); document.getElementById('depositModal').classList.add('hidden'); }
+        function openWithdrawModal() { document.getElementById('withdrawModal').classList.remove('hidden'); document.getElementById('withdrawModal').classList.add('flex'); }
+        function closeWithdrawModal() { document.getElementById('withdrawModal').classList.remove('flex'); document.getElementById('withdrawModal').classList.add('hidden'); }
+
+        function submitDeposit() {
+            let amount = parseFloat(document.getElementById('depAmount').value);
+            let utr = document.getElementById('depUtr').value.trim();
+            if(!amount || isNaN(amount) || amount <= 0) { alert("Please enter valid amount!"); return; }
+            if(!utr || utr.length < 6) { alert("Please enter valid UTR!"); return; }
+            let requests = JSON.parse(localStorage.getItem('depositRequests') || '[]');
+            requests.push({ id: Date.now(), type: 'DEPOSIT', amount: amount, utr: utr, user: "bhavishay goyal" });
+            localStorage.setItem('depositRequests', JSON.stringify(requests));
+            alert(`Deposit Request of ₹${amount} submitted!`);
+            closeDepositModal();
+        }
+
+        function submitWithdrawal() {
+            let amount = parseFloat(document.getElementById('withdrawAmount').value);
+            let upi = document.getElementById('withdrawUpi').value.trim();
+            if(!amount || isNaN(amount) || amount <= 0) { alert("Please enter valid amount!"); return; }
+            if(!upi || !upi.includes('@')) { alert("Please enter valid UPI ID!"); return; }
+            if(amount > balance) { alert("Insufficient wallet balance!"); return; }
+            
+            balance -= amount;
+            document.getElementById('walletBalance').innerText = '₹' + balance.toFixed(2);
+
+            let requests = JSON.parse(localStorage.getItem('depositRequests') || '[]');
+            requests.push({ id: Date.now(), type: 'WITHDRAW', amount: amount, utr: upi, user: "bhavishay goyal" });
+            localStorage.setItem('depositRequests', JSON.stringify(requests));
+            alert(`Withdrawal Request of ₹${amount} submitted successfully!`);
+            closeWithdrawModal();
+        }
+
+        // Aviator
+        let aviatorInterval = null, currentMultiplier = 1.00, aviatorPlaying = false;
+        function startAviator() {
+            let bet = parseFloat(document.getElementById('aviatorBet').value);
+            if(bet > balance) { alert("Insufficient balance!"); return; }
+            balance -= bet;
+            document.getElementById('walletBalance').innerText = '₹' + balance.toFixed(2);
+            let btn = document.getElementById('aviatorBtn');
+            btn.innerText = "CASHOUT NOW";
+            btn.className = "w-full bg-emerald-600 hover:bg-emerald-500 text-white font-bold py-3 rounded-xl text-lg transition";
+            btn.setAttribute("onclick", "cashOutAviator()");
+            currentMultiplier = 1.00; aviatorPlaying = true;
+            let crashAt = (1.2 + Math.random() * 3.5).toFixed(2);
+            aviatorInterval = setInterval(() => {
+                currentMultiplier += 0.05;
+                document.getElementById('aviatorMultiplier').innerText = currentMultiplier.toFixed(2) + 'x';
+                if(currentMultiplier >= parseFloat(crashAt)) {
+                    clearInterval(aviatorInterval);
+                    if(aviatorPlaying) { document.getElementById('aviatorStatus').innerText = "CRASHED! 💥"; resetAviatorButton(); }
+                }
+            }, 100);
+        }
+        function cashOutAviator() {
+            clearInterval(aviatorInterval);
+            let bet = parseFloat(document.getElementById('aviatorBet').value);
+            let won = Math.floor(bet * currentMultiplier);
+            balance += won;
+            document.getElementById('walletBalance').innerText = '₹' + balance.toFixed(2);
+            document.getElementById('aviatorStatus').innerText = `CASHED OUT! Won ₹${won}`;
+            aviatorPlaying = false; resetAviatorButton();
+        }
+        function resetAviatorButton() {
+            let btn = document.getElementById('aviatorBtn');
+            btn.innerText = "Place Bet & Start";
+            btn.className = "w-full bg-parimatchYellow hover:bg-yellow-400 text-black font-bold py-3 rounded-xl text-lg transition";
+            btn.setAttribute("onclick", "startAviator()");
+        }
+
+        // Mines
+        let minePosition = -1, minesActive = false, minesCurrentWin = 0, minesBetAmount = 0, revealedCount = 0;
+        function initMinesGrid() {
+            let grid = document.getElementById('minesGrid');
+            grid.innerHTML = "";
+            for(let i=0; i<16; i++) {
+                grid.innerHTML += `<button onclick="clickTile(${i})" id="tile-${i}" class="bg-zinc-900 border border-zinc-800 h-16 rounded-xl text-xl font-bold hover:bg-zinc-800 transition">❓</button>`;
+            }
+        }
+        function startMines() {
+            minesBetAmount = parseFloat(document.getElementById('minesBet').value);
+            if(minesBetAmount > balance) { alert("Insufficient balance!"); return; }
+            balance -= minesBetAmount;
+            document.getElementById('walletBalance').innerText = '₹' + balance.toFixed(2);
+            initMinesGrid(); minePosition = Math.floor(Math.random() * 16); minesActive = true; revealedCount = 0;
+            minesCurrentWin = minesBetAmount;
+            document.getElementById('minesWinAmt').innerText = '₹' + minesCurrentWin.toFixed(2);
+            document.getElementById('minesCashoutBtn').classList.remove('hidden');
+            document.getElementById('minesStartBtn').innerText = "Playing...";
+            document.getElementById('minesStartBtn').disabled = true;
+        }
+        function clickTile(index) {
+            if(!minesActive) { alert("Please start the game first!"); return; }
+            let tile = document.getElementById('tile-' + index);
+            if(tile.innerText !== "❓") return;
+            if(index === minePosition) {
+                tile.innerText = "💣"; tile.className = "bg-red-900/50 border border-red-700 h-16 rounded-xl text-xl font-bold";
+                alert("Boom! You hit a mine. Game Over!"); endMines();
+            } else {
+                tile.innerText = "💎"; tile.className = "bg-emerald-900/50 border border-emerald-700 h-16 rounded-xl text-xl font-bold";
+                revealedCount++;
+                minesCurrentWin = minesBetAmount * (1 + (revealedCount * 0.4));
+                document.getElementById('minesWinAmt').innerText = '₹' + minesCurrentWin.toFixed(2);
+            }
+        }
+        function cashoutMines() {
+            if(!minesActive) return;
+            balance += minesCurrentWin;
+            document.getElementById('walletBalance').innerText = '₹' + balance.toFixed(2);
+            alert(`Cashed out! Won ₹${minesCurrentWin.toFixed(2)}`);
+            endMines();
+        }
+        function endMines() {
+            minesActive = false;
+            document.getElementById('minesCashoutBtn').classList.add('hidden');
+            document.getElementById('minesStartBtn').innerText = "Start Game";
+            document.getElementById('minesStartBtn').disabled = false;
+        }
+
+        // Tower Rush
+        let towerStep = 0, towerActive = false, towerBetAmount = 0, currentTowerWin = 0;
+        function initTowerGrid() {
+            let grid = document.getElementById('towerGrid');
+            grid.innerHTML = "";
+            for(let i=4; i>=1; i--) {
+                grid.innerHTML += `<div id="tower-row-${i}" class="grid grid-cols-3 gap-2 opacity-50 pointer-events-none">
+                    <button onclick="clickTower(${i}, 0)" class="bg-zinc-900 border border-zinc-800 py-3 rounded-lg font-bold hover:bg-zinc-800">🧱</button>
+                    <button onclick="clickTower(${i}, 1)" class="bg-zinc-900 border border-zinc-800 py-3 rounded-lg font-bold hover:bg-zinc-800">🧱</button>
+                    <button onclick="clickTower(${i}, 2)" class="bg-zinc-900 border border-zinc-800 py-3 rounded-lg font-bold hover:bg-zinc-800">🧱</button>
+                </div>`;
+            }
+        }
+        function startTower() {
+            towerBetAmount = parseFloat(document.getElementById('towerBet').value);
+            if(towerBetAmount > balance) { alert("Insufficient balance!"); return; }
+            balance -= towerBetAmount;
+            document.getElementById('walletBalance').innerText = '₹' + balance.toFixed(2);
+            initTowerGrid(); towerStep = 1; towerActive = true; currentTowerWin = towerBetAmount;
+            document.getElementById('towerWinAmt').innerText = '₹' + currentTowerWin.toFixed(2);
+            document.getElementById('towerMulti').innerText = '1.25x';
+            document.getElementById('towerCashoutBtn').classList.remove('hidden');
+            document.getElementById('towerStartBtn').innerText = "Climbing...";
+            document.getElementById('towerStartBtn').disabled = true;
+            document.getElementById('tower-row-1').classList.remove('opacity-50', 'pointer-events-none');
+        }
+        function clickTower(row, col) {
+            if(!towerActive || row !== towerStep) return;
+            let safeCol = Math.floor(Math.random() * 3);
+            if(col === safeCol) {
+                currentTowerWin = towerBetAmount * (1 + (towerStep * 0.5));
+                document.getElementById('towerWinAmt').innerText = '₹' + currentTowerWin.toFixed(2);
+                document.getElementById('towerMulti').innerText = (1 + (towerStep * 0.5)).toFixed(2) + 'x';
+                document.getElementById(`tower-row-${row}`).classList.add('opacity-50', 'pointer-events-none');
+                towerStep++;
+                if(towerStep > 4) {
+                    alert(`Amazing! You reached the top and won ₹${currentTowerWin.toFixed(2)}!`);
+                    balance += currentTowerWin; document.getElementById('walletBalance').innerText = '₹' + balance.toFixed(2);
+                    endTower();
+                } else {
+                    document.getElementById(`tower-row-${towerStep}`).classList.remove('opacity-50', 'pointer-events-none');
+                }
+            } else {
+                alert("Boom! Wall collapsed. Game Over!");
+                endTower();
+            }
+        }
+        function cashoutTower() {
+            if(!towerActive) return;
+            balance += currentTowerWin; document.getElementById('walletBalance').innerText = '₹' + balance.toFixed(2);
+            alert(`Cashed out safely! Won ₹${currentTowerWin.toFixed(2)}`);
+            endTower();
+        }
+        function endTower() {
+            towerActive = false;
+            document.getElementById('towerCashoutBtn').classList.add('hidden');
+            document.getElementById('towerStartBtn').innerText = "Start Climb";
+            document.getElementById('towerStartBtn').disabled = false;
+        }
+
+        // Plinko (Animated Canvas Drop)
+        function playPlinko() {
+            let bet = parseFloat(document.getElementById('plinkoBet').value);
+            if(bet > balance) { alert("Insufficient balance!"); return; }
+            balance -= bet;
+            document.getElementById('walletBalance').innerText = '₹' + balance.toFixed(2);
+            
+            let btn = document.getElementById('plinkoBtn');
+            btn.disabled = true;
+            btn.innerText = "Ball Dropping...";
+
+            let canvas = document.getElementById('plinkoCanvas');
+            let ctx = canvas.getContext('2d');
+            
+            let x = 175, y = 20;
+            let targetX = 50 + Math.random() * 250;
+            let targetY = 220;
+            let vx = (targetX - x) / 30;
+            let vy = (targetY - y) / 30;
+
+            let animationInterval = setInterval(() => {
+                ctx.clearRect(0, 0, canvas.width, canvas.height);
+                
+                ctx.fillStyle = '#555';
+                for(let px = 60; px <= 300; px += 40) {
+                    for(let py = 60; py <= 180; py += 40) {
+                        ctx.beginPath();
+                        ctx.arc(px, py, 4, 0, Math.PI * 2);
+                        ctx.fill();
+                    }
+                }
+
+                ctx.fillStyle = '#ffe100';
+                ctx.beginPath();
+                ctx.arc(x, y, 8, 0, Math.PI * 2);
+                ctx.fill();
+
+                x += vx + (Math.random() - 0.5) * 6;
+                y += vy;
+
+                if(y >= targetY) {
+                    clearInterval(animationInterval);
+                    let multipliers = [0.5, 1.2, 2.0, 5.0, 10.0];
+                    let multi = multipliers[Math.floor(Math.random() * multipliers.length)];
+                    let won = Math.floor(bet * multi);
+                    balance += won;
+                    document.getElementById('walletBalance').innerText = '₹' + balance.toFixed(2);
+                    document.getElementById('plinkoResult').innerHTML = `Hit <span class="text-green-400 font-bold">${multi}x</span> slot! Won <span class="text-parimatchYellow">₹${won}</span>`;
+                    btn.disabled = false;
+                    btn.innerText = "Drop Ball";
+                }
+            }, 30);
+        }
+
+        // Limbo
+        function playLimbo() {
+            let bet = parseFloat(document.getElementById('limboBet').value);
+            let target = parseFloat(document.getElementById('limboTarget').value);
+            if(bet > balance) { alert("Insufficient balance!"); return; }
+            balance -= bet; document.getElementById('walletBalance').innerText = '₹' + balance.toFixed(2);
+            let result = (1.0 + Math.random() * 4.0).toFixed(2);
+            document.getElementById('limboResult').innerText = result + 'x';
+            if(parseFloat(result) >= target) {
+                let won = Math.floor(bet * target);
+                balance += won; document.getElementById('walletBalance').innerText = '₹' + balance.toFixed(2);
+                alert(`Won ₹${won}!`);
+            } else {
+                alert("Target missed! Better luck next time.");
+            }
+        }
+
+        // Dice
+        function playDice() {
+            let bet = parseFloat(document.getElementById('diceBet').value);
+            if(bet > balance) { alert("Insufficient balance!"); return; }
+            balance -= bet; document.getElementById('walletBalance').innerText = '₹' + balance.toFixed(2);
+            let roll = Math.floor(Math.random() * 100) + 1;
+            document.getElementById('diceResult').innerText = `🎲 ${roll}`;
+            if(roll > 50) {
+                let won = bet * 2;
+                balance += won; document.getElementById('walletBalance').innerText = '₹' + balance.toFixed(2);
+                alert(`Rolled ${roll}! You won ₹${won}`);
+            } else {
+                alert(`Rolled ${roll}! You lost.`);
+            }
+        }
+    </script>
+</body>
+</html>

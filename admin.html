@@ -1,0 +1,153 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Royal Strikers - Admin Master Dashboard</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        parimatchDark: '#121212',
+                        parimatchCard: '#1e1e1e',
+                        parimatchYellow: '#ffe100',
+                        parimatchGreen: '#00b167',
+                    }
+                }
+            }
+        }
+    </script>
+</head>
+<body class="bg-parimatchDark text-white min-h-screen p-6 font-sans">
+
+    <div class="max-w-7xl mx-auto space-y-6">
+        
+        <!-- Top Header Dashboard -->
+        <div class="flex justify-between items-center bg-parimatchCard border border-zinc-800 p-5 rounded-2xl shadow-xl">
+            <div class="flex items-center space-x-3">
+                <i class="fa-solid fa-user-shield text-parimatchYellow text-2xl"></i>
+                <h1 class="text-xl font-black tracking-wider text-white">Admin Master Dashboard</h1>
+            </div>
+            <button onclick="loadAdminData()" class="bg-zinc-800 hover:bg-zinc-700 text-white px-4 py-2 rounded-xl text-xs font-bold transition flex items-center">
+                <i class="fa-solid fa-rotate mr-2"></i> Refresh Data
+            </button>
+        </div>
+
+        <!-- Top Stats Cards -->
+        <div class="grid grid-cols-1 md:grid-cols-4 gap-4">
+            <div class="bg-parimatchCard border border-zinc-800 p-5 rounded-2xl">
+                <div class="text-xs text-zinc-400 mb-1">Total Deposits</div>
+                <div id="statDeposits" class="text-2xl font-black text-parimatchYellow">₹0</div>
+            </div>
+            <div class="bg-parimatchCard border border-zinc-800 p-5 rounded-2xl">
+                <div class="text-xs text-zinc-400 mb-1">Total Withdrawals</div>
+                <div id="statWithdrawals" class="text-2xl font-black text-red-500">₹0</div>
+            </div>
+            <div class="bg-parimatchCard border border-zinc-800 p-5 rounded-2xl">
+                <div class="text-xs text-zinc-400 mb-1">Total Wagered</div>
+                <div id="statWagered" class="text-2xl font-black text-blue-400">₹0</div>
+            </div>
+            <div class="bg-parimatchCard border border-zinc-800 p-5 rounded-2xl">
+                <div class="text-xs text-zinc-400 mb-1">Net House Profit</div>
+                <div id="statProfit" class="text-2xl font-black text-parimatchGreen">₹0</div>
+            </div>
+        </div>
+
+        <!-- Deposit & Withdrawal Requests Table -->
+        <div class="bg-parimatchCard border border-zinc-800 rounded-2xl p-6 shadow-xl space-y-4">
+            <h3 class="text-base font-bold text-white flex items-center">
+                <i class="fa-solid fa-list-check mr-2 text-parimatchYellow"></i> Deposit & Withdrawal Requests
+            </h3>
+
+            <div class="overflow-x-auto">
+                <table class="w-full text-left border-collapse">
+                    <thead>
+                        <tr class="border-b border-zinc-800 text-xs text-zinc-400">
+                            <th class="py-3 px-4">ID</th>
+                            <th class="py-3 px-4">User</th>
+                            <th class="py-3 px-4">Type</th>
+                            <th class="py-3 px-4">Amount</th>
+                            <th class="py-3 px-4">UTR / UPI</th>
+                            <th class="py-3 px-4">Status / Action</th>
+                        </tr>
+                    </thead>
+                    <tbody id="requestTableBody" class="text-sm">
+                        <tr>
+                            <td colspan="6" class="text-center py-6 text-zinc-500">No requests found.</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+    </div>
+
+    <!-- JavaScript -->
+    <script>
+        window.onload = function() { loadAdminData(); };
+
+        function loadAdminData() {
+            let requests = JSON.parse(localStorage.getItem('depositRequests') || '[]');
+            let tableBody = document.getElementById('requestTableBody');
+            
+            let totalDep = 0, totalWd = 0;
+            requests.forEach(r => { 
+                if(r.type === 'DEPOSIT') totalDep += r.amount; 
+                if(r.type === 'WITHDRAW') totalWd += r.amount; 
+            });
+            document.getElementById('statDeposits').innerText = '₹' + totalDep;
+            document.getElementById('statWithdrawals').innerText = '₹' + totalWd;
+            document.getElementById('statWagered').innerText = '₹700';
+            document.getElementById('statProfit').innerText = '₹' + (totalDep - totalWd);
+
+            if(requests.length === 0) {
+                tableBody.innerHTML = `<tr><td colspan="6" class="text-center py-6 text-zinc-500">No pending requests right now.</td></tr>`;
+                return;
+            }
+
+            tableBody.innerHTML = "";
+            requests.forEach((req, index) => {
+                let typeBadge = req.type === 'WITHDRAW' 
+                    ? `<span class="bg-red-500/10 text-red-400 border border-red-500/30 px-2.5 py-1 rounded-md text-xs font-bold">WITHDRAW</span>` 
+                    : `<span class="bg-yellow-500/10 text-parimatchYellow border border-yellow-500/30 px-2.5 py-1 rounded-md text-xs font-bold">DEPOSIT</span>`;
+
+                tableBody.innerHTML += `
+                    <tr class="border-b border-zinc-800/50 hover:bg-zinc-900/50 transition">
+                        <td class="py-4 px-4 text-xs text-zinc-500">#${req.id.toString().slice(-4)}</td>
+                        <td class="py-4 px-4 font-semibold text-white">${req.user}</td>
+                        <td class="py-4 px-4">${typeBadge}</td>
+                        <td class="py-4 px-4 font-bold text-parimatchYellow">₹${req.amount}</td>
+                        <td class="py-4 px-4 text-xs text-zinc-300 font-mono font-semibold">${req.utr}</td>
+                        <td class="py-4 px-4">
+                            <div class="flex space-x-2">
+                                <button onclick="approveReq(${index}, ${req.amount}, '${req.type}')" class="bg-emerald-600 hover:bg-emerald-500 text-white px-3 py-1.5 rounded-lg text-xs font-bold transition">Approve</button>
+                                <button onclick="rejectReq(${index})" class="bg-red-600 hover:bg-red-500 text-white px-3 py-1.5 rounded-lg text-xs font-bold transition">Reject</button>
+                            </div>
+                        </td>
+                    </tr>
+                `;
+            });
+        }
+
+        function approveReq(index, amount, type) {
+            let requests = JSON.parse(localStorage.getItem('depositRequests') || '[]');
+            requests.splice(index, 1);
+            localStorage.setItem('depositRequests', JSON.stringify(requests));
+            alert(`${type} of ₹${amount} Approved successfully!`);
+            loadAdminData();
+        }
+
+        function rejectReq(index) {
+            let requests = JSON.parse(localStorage.getItem('depositRequests') || '[]');
+            requests.splice(index, 1);
+            localStorage.setItem('depositRequests', JSON.stringify(requests));
+            alert("Request rejected.");
+            loadAdminData();
+        }
+    </script>
+
+</body>
+</html>
