@@ -33,8 +33,36 @@
 </head>
 <body class="bg-parimatchDark text-white min-h-screen font-sans">
 
+    <!-- ================= LOGIN / SIGNUP MODAL ================= -->
+    <div id="authModal" class="fixed inset-0 bg-black/90 backdrop-blur-md flex items-center justify-center z-50 p-4">
+        <div class="bg-parimatchCard border border-zinc-800 rounded-2xl max-w-md w-full p-6 shadow-2xl space-y-5">
+            <div class="text-center space-y-2">
+                <h2 class="text-2xl font-black text-parimatchYellow tracking-wider">⚡ ROYAL STRIKERS</h2>
+                <p class="text-xs text-zinc-400">Login or Sign up to access live sports & casino games</p>
+            </div>
+            
+            <div class="space-y-4">
+                <div>
+                    <label class="text-xs text-zinc-400 block mb-1">Your Name / Username:</label>
+                    <input type="text" id="authName" placeholder="e.g. Bhavishay" class="w-full bg-zinc-900 border border-zinc-700 rounded-lg p-3 text-sm text-white focus:outline-none focus:border-parimatchYellow">
+                </div>
+                <div>
+                    <label class="text-xs text-zinc-400 block mb-1">Mobile Number:</label>
+                    <input type="text" id="authPhone" placeholder="e.g. 9876543210" class="w-full bg-zinc-900 border border-zinc-700 rounded-lg p-3 text-sm text-white focus:outline-none focus:border-parimatchYellow">
+                </div>
+                <div>
+                    <label class="text-xs text-zinc-400 block mb-1">Password:</label>
+                    <input type="password" id="authPass" placeholder="••••••••" class="w-full bg-zinc-900 border border-zinc-700 rounded-lg p-3 text-sm text-white focus:outline-none focus:border-parimatchYellow">
+                </div>
+                <button onclick="handleLoginSignup()" class="w-full bg-parimatchYellow hover:bg-yellow-400 text-black py-3 rounded-xl font-bold text-sm transition">
+                    Start Playing Now (Login / Register)
+                </button>
+            </div>
+        </div>
+    </div>
+
     <!-- Top Header -->
-    <header class="bg-parimatchCard border-b border-zinc-800 px-6 py-3 flex justify-between items-center sticky top-0 z-50">
+    <header class="bg-parimatchCard border-b border-zinc-800 px-6 py-3 flex justify-between items-center sticky top-0 z-40">
         <div class="flex items-center space-x-6">
             <h1 class="text-2xl font-black tracking-wider text-parimatchYellow">
                 ⚡ ROYAL STRIKERS
@@ -45,8 +73,12 @@
             </nav>
         </div>
 
-        <!-- Wallet, Deposit & Withdrawal Buttons -->
+        <!-- User Profile & Wallet -->
         <div class="flex items-center space-x-3">
+            <div class="hidden sm:flex flex-col text-right">
+                <span id="displayUsername" class="text-xs font-bold text-white">Player</span>
+                <span class="text-[10px] text-green-400">● Online</span>
+            </div>
             <div class="bg-zinc-900 border border-zinc-700 px-4 py-1.5 rounded-lg flex items-center space-x-2">
                 <span class="text-zinc-400 text-xs">Balance:</span>
                 <span id="walletBalance" class="font-bold text-parimatchYellow">₹10,000.00</span>
@@ -204,7 +236,7 @@
             <div id="towerGrid" class="space-y-2 my-4"></div>
         </div>
 
-        <!-- ================= 4. PLINKO (WITH ANIMATION) ================= -->
+        <!-- ================= 4. PLINKO ================= -->
         <div id="section-plinko" class="hidden max-w-xl mx-auto bg-parimatchCard border border-zinc-800 rounded-2xl p-6 text-center">
             <button onclick="switchTab('casino')" class="float-left text-zinc-400 hover:text-white mb-4"><i class="fa-solid fa-arrow-left mr-1"></i> Back to Casino</button>
             <div class="clear-both"></div>
@@ -299,8 +331,25 @@
 
     <!-- JavaScript -->
     <script>
-        let balance = 10000.00;
+        let balance = 10.00;
         let activeBet = null;
+        let loggedInUser = "Player";
+
+        function handleLoginSignup() {
+            let name = document.getElementById('authName').value.trim();
+            let phone = document.getElementById('authPhone').value.trim();
+            let pass = document.getElementById('authPass').value.trim();
+
+            if(!name || !phone || !pass) {
+                alert("Please fill in all fields (Name, Phone, Password)!");
+                return;
+            }
+
+            loggedInUser = name;
+            document.getElementById('displayUsername').innerText = loggedInUser;
+            document.getElementById('authModal').classList.add('hidden');
+            alert(`Welcome to Royal Strikers, ${loggedInUser}! Your account is active with ₹10,000 wallet balance.`);
+        }
 
         function switchTab(tabName) {
             ['sports', 'casino', 'aviator', 'mines', 'tower', 'plinko', 'limbo', 'dice'].forEach(t => {
@@ -415,7 +464,7 @@
             if(!amount || isNaN(amount) || amount <= 0) { alert("Please enter valid amount!"); return; }
             if(!utr || utr.length < 6) { alert("Please enter valid UTR!"); return; }
             let requests = JSON.parse(localStorage.getItem('depositRequests') || '[]');
-            requests.push({ id: Date.now(), type: 'DEPOSIT', amount: amount, utr: utr, user: "bhavishay goyal" });
+            requests.push({ id: Date.now(), type: 'DEPOSIT', amount: amount, utr: utr, user: loggedInUser });
             localStorage.setItem('depositRequests', JSON.stringify(requests));
             alert(`Deposit Request of ₹${amount} submitted!`);
             closeDepositModal();
@@ -432,7 +481,7 @@
             document.getElementById('walletBalance').innerText = '₹' + balance.toFixed(2);
 
             let requests = JSON.parse(localStorage.getItem('depositRequests') || '[]');
-            requests.push({ id: Date.now(), type: 'WITHDRAW', amount: amount, utr: upi, user: "bhavishay goyal" });
+            requests.push({ id: Date.now(), type: 'WITHDRAW', amount: amount, utr: upi, user: loggedInUser });
             localStorage.setItem('depositRequests', JSON.stringify(requests));
             alert(`Withdrawal Request of ₹${amount} submitted successfully!`);
             closeWithdrawModal();
